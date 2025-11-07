@@ -11,5 +11,5 @@ export function confirm(message: string): Promise<boolean> {
             const normalized = answer.trim().toLowerCase();
             resolve(normalized === "y" || normalized === "yes");
         });
-    })
+    });
 }
