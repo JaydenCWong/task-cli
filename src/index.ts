@@ -1,11 +1,11 @@
 #!/usr/bin/env node
 
-import {loadTasks, saveTasks} from "./storage.js";
-import type {Task} from "./storage.js";
+import {addTask, listTasks, markTaskDone, clearTasks} from "./taskManager.js";
 import {Command} from "commander";
 
+
 const program = new Command();
-let tasks = loadTasks();
+
 program
     .name("task-cli")
     .version("1.0.0)")
@@ -36,44 +36,7 @@ program
     .command("clear")
     .description("Clear tasks, by default clears completed tasks only")
     .option("-a, --all", "Clear all tasks")
-    .action((options) => {
-        clearTasks(options.all);
+    .action(async (options) => {
+        await clearTasks(options.all);
     });
-
-function clearTasks(clearAll:boolean): void {
-    if(clearAll){
-            tasks = [];
-        } else {
-            tasks = tasks.filter(task => !task.done);
-        }
-        saveTasks(tasks);
-        console.log(`✅ Cleared ${clearAll ? "all" : "done"} tasks.`);
-    }
-
-
-function addTask(task: string, options: {priority: string}): void {
-        const newTask: Task = {id: Date.now(), text: task, done: false};
-        tasks.push(newTask);
-        saveTasks(tasks);
-        console.log(`✅ Added: "${task}" with priority ${options.priority}`);
-    }
-
-function listTasks(showAll: boolean): void {
-        tasks.forEach((task, index) => {
-            if(showAll || !task.done){
-                console.log(`${index + 1}. [${task.done ? "x" : " "}] ${task.text}`);
-            }
-        });
-    }
-
-function markTaskDone(id: number): void {
-    const task = tasks.find((_, i)=> i + 1 === id);
-        if(task){
-            task.done = true;
-            saveTasks(tasks);
-            console.log(`✅ Marked "${task.text}" as done.`);
-        } else {
-            console.log(`❌ Task #${id} not found.`);
-        }
-    }
 program.parse(process.argv);
