@@ -32,6 +32,24 @@ program
     .action((id)=> {
         markTaskDone(Number(id));});
 
+program
+    .command("clear")
+    .description("Clear tasks, by default clears completed tasks only")
+    .option("-a, --all", "Clear all tasks")
+    .action((options) => {
+        clearTasks(options.all);
+    });
+
+function clearTasks(clearAll:boolean): void {
+    if(clearAll){
+            tasks = [];
+        } else {
+            tasks = tasks.filter(task => !task.done);
+        }
+        saveTasks(tasks);
+        console.log(`✅ Cleared ${clearAll ? "all" : "done"} tasks.`);
+    }
+
 
 function addTask(task: string, options: {priority: string}): void {
         const newTask: Task = {id: Date.now(), text: task, done: false};
