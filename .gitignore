@@ -1,0 +1,14 @@
+# Node modules
+node_modules/
+
+# Compiled output
+dist/
+
+# Environment files
+.env
+
+# Logs
+*.log
+
+# Generated Task file
+tasks.json
