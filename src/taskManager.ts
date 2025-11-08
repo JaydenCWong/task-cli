@@ -1,20 +1,23 @@
 import {loadTasks, saveTasks} from "./storage.js";
 import type {Task} from "./storage.js";
-import {confirm} from "./utils.js";
+
 
 let tasks = loadTasks();
+type ConfirmFn = (message: string) => Promise<boolean>;
 
-export async function clearTasks(clearAll:boolean): Promise<void> {
+export async function clearTasks(clearAll:boolean, confirmFn?: ConfirmFn): Promise<void> {
     if(tasks.length === 0){
         console.log("💭 No tasks to clear.");
         return;
     }
     if(clearAll){
-        const userConfirmed = await confirm("Are you sure you want to clear ALL tasks?");
+        if(confirmFn){
+        const userConfirmed = await confirmFn("Are you sure you want to clear ALL tasks?");
         if(!userConfirmed){
             console.log("❌ Cancelled.");
             return;
         }
+    }
         tasks.length = 0;
         } else {
             const completedTasks = tasks.filter(task => task.done);
