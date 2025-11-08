@@ -16,58 +16,62 @@ vi.mock("../src/utils.js", () => {
   };
 });
 
-describe("clearTasks", ()=>{
-    const mockedStorage = vi.mocked(storage, true);
-    const mockedUtils = vi.mocked(utils, true);
+describe("clearTasks", () => {
+  const mockedStorage = vi.mocked(storage, true);
+  const mockedUtils = vi.mocked(utils, true);
 
-    beforeEach(() => {
-        vi.clearAllMocks();
-    });
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
 
-    it("clears completed tasks only (default mode)", async ()=>{
-        mockedStorage.loadTasks.mockReturnValue([
-            {id: 1, text: "Task 1", done: true},
-            {id: 2, text: "Task 2", done: false}
-        ]);
-        await clearTasks(false);
+  it("clears completed tasks only (default mode)", async () => {
+    mockedStorage.loadTasks.mockReturnValue([
+      { id: 1, text: "Task 1", done: true },
+      { id: 2, text: "Task 2", done: false },
+    ]);
+    await clearTasks(false);
 
-        expect(mockedStorage.saveTasks).toHaveBeenCalledWith([
-            {id: 2, text: "Task 2", done: false}
-        ]);
-    });
+    expect(mockedStorage.saveTasks).toHaveBeenCalledWith([
+      { id: 2, text: "Task 2", done: false },
+    ]);
+  });
 
-    it("confirms before clearing all tasks", async () =>{
-        mockedStorage.loadTasks.mockReturnValue([
-            {id: 1, text: "Task 1", done: true},
-            {id: 2, text: "Task 2", done: false}
-        ]);
-        mockedUtils.confirm.mockResolvedValue(true);
+  it("confirms before clearing all tasks", async () => {
+    mockedStorage.loadTasks.mockReturnValue([
+      { id: 1, text: "Task 1", done: true },
+      { id: 2, text: "Task 2", done: false },
+    ]);
+    mockedUtils.confirm.mockResolvedValue(true);
 
-        await clearTasks(true, mockedUtils.confirm);
+    await clearTasks(true, mockedUtils.confirm);
 
-        expect(mockedUtils.confirm).toHaveBeenCalledWith("Are you sure you want to clear ALL tasks?");
-        expect(mockedStorage.saveTasks).toHaveBeenCalledWith([]);
-    });
+    expect(mockedUtils.confirm).toHaveBeenCalledWith(
+      "Are you sure you want to clear ALL tasks?"
+    );
+    expect(mockedStorage.saveTasks).toHaveBeenCalledWith([]);
+  });
 
-    it("cancels clearing all tasks if user says no", async () =>{
-        mockedStorage.loadTasks.mockReturnValue([
-            {id: 1, text: "Task 1", done: true},
-            {id: 2, text: "Task 2", done: false}
-        ]);
+  it("cancels clearing all tasks if user says no", async () => {
+    mockedStorage.loadTasks.mockReturnValue([
+      { id: 1, text: "Task 1", done: true },
+      { id: 2, text: "Task 2", done: false },
+    ]);
 
-        mockedUtils.confirm.mockResolvedValue(false);
+    mockedUtils.confirm.mockResolvedValue(false);
 
-        await clearTasks(true, mockedUtils.confirm);
+    await clearTasks(true, mockedUtils.confirm);
 
-        expect(mockedUtils.confirm).toHaveBeenCalledWith("Are you sure you want to clear ALL tasks?");
-        expect(mockedStorage.saveTasks).not.toHaveBeenCalled();
-    });
+    expect(mockedUtils.confirm).toHaveBeenCalledWith(
+      "Are you sure you want to clear ALL tasks?"
+    );
+    expect(mockedStorage.saveTasks).not.toHaveBeenCalled();
+  });
 
-    it("handles empty task list gracefully", async () => {
-        mockedStorage.loadTasks.mockReturnValue([]);
+  it("handles empty task list gracefully", async () => {
+    mockedStorage.loadTasks.mockReturnValue([]);
 
-        await clearTasks(false);
+    await clearTasks(false);
 
-        expect(mockedStorage.saveTasks).not.toHaveBeenCalled();
-    })
-})
+    expect(mockedStorage.saveTasks).not.toHaveBeenCalled();
+  });
+});

@@ -74,14 +74,14 @@ export async function interactiveCLI() {
         markTaskDone(id);
         break;
       }
-      case "clear":{
+      case "clear": {
         const { clearAll } = await inquirer.prompt([
-            {
-                type: "confirm",
-                name: "clearAll",
-                message: "Clear all tasks (including completed)?",
-                default: false,
-            },
+          {
+            type: "confirm",
+            name: "clearAll",
+            message: "Clear all tasks (including completed)?",
+            default: false,
+          },
         ]);
         await clearTasks(clearAll);
         break;
