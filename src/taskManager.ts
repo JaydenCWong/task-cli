@@ -3,10 +3,10 @@ import type {Task} from "./storage.js";
 import chalk from "chalk";
 
 
-let tasks = loadTasks();
 type ConfirmFn = (message: string) => Promise<boolean>;
 
 export async function clearTasks(clearAll:boolean, confirmFn?: ConfirmFn): Promise<void> {
+    let tasks = loadTasks();
     if(tasks.length === 0){
         console.log(chalk.cyan("💭 No tasks to clear."));
         return;
@@ -34,6 +34,7 @@ export async function clearTasks(clearAll:boolean, confirmFn?: ConfirmFn): Promi
 
 
 export function addTask(task: string, options: {priority: string}): void {
+    let tasks = loadTasks();
         const newTask: Task = {id: Date.now(), text: task, done: false};
         tasks.push(newTask);
         saveTasks(tasks);
@@ -41,6 +42,11 @@ export function addTask(task: string, options: {priority: string}): void {
     }
 
 export function listTasks(showAll: boolean): void {
+    let tasks = loadTasks();
+        if(tasks.length === 0){
+            console.log(chalk.cyan("💭 No tasks found."));
+            return;
+        }
         tasks.forEach((task, index) => {
             if(showAll || !task.done){
                 console.log(`${index + 1}. [${task.done ? "x" : " "}] ${task.text}`);
@@ -49,6 +55,7 @@ export function listTasks(showAll: boolean): void {
     }
 
 export function markTaskDone(id: number): void {
+    let tasks = loadTasks();
     const task = tasks.find((_, i)=> i + 1 === id);
         if(task){
             task.done = true;
