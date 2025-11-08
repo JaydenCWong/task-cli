@@ -1,5 +1,6 @@
 import {loadTasks, saveTasks} from "./storage.js";
 import type {Task} from "./storage.js";
+import chalk from "chalk";
 
 
 let tasks = loadTasks();
@@ -7,14 +8,14 @@ type ConfirmFn = (message: string) => Promise<boolean>;
 
 export async function clearTasks(clearAll:boolean, confirmFn?: ConfirmFn): Promise<void> {
     if(tasks.length === 0){
-        console.log("💭 No tasks to clear.");
+        console.log(chalk.cyan("💭 No tasks to clear."));
         return;
     }
     if(clearAll){
         if(confirmFn){
         const userConfirmed = await confirmFn("Are you sure you want to clear ALL tasks?");
         if(!userConfirmed){
-            console.log("❌ Cancelled.");
+            console.log(chalk.red("❌ Cancelled."));
             return;
         }
     }
@@ -22,13 +23,13 @@ export async function clearTasks(clearAll:boolean, confirmFn?: ConfirmFn): Promi
         } else {
             const completedTasks = tasks.filter(task => task.done);
             if(completedTasks.length === 0){
-                console.log("💭 No completed tasks to clear.");
+                console.log(chalk.cyan("💭 No completed tasks to clear."));
                 return;
             }
             tasks = tasks.filter(task => !task.done);
         }
         saveTasks(tasks);
-        console.log(`✅🗑️  Cleared ${clearAll ? "all" : "completed"} tasks.`);
+        console.log(chalk.green(`✅🗑️  Cleared ${clearAll ? "all" : "completed"} tasks.`));
     }
 
 
@@ -36,7 +37,7 @@ export function addTask(task: string, options: {priority: string}): void {
         const newTask: Task = {id: Date.now(), text: task, done: false};
         tasks.push(newTask);
         saveTasks(tasks);
-        console.log(`✅ Added: "${task}" with priority ${options.priority}`);
+        console.log(chalk.green(`✅ Added: "${task}" with priority ${options.priority}`));
     }
 
 export function listTasks(showAll: boolean): void {
@@ -52,8 +53,8 @@ export function markTaskDone(id: number): void {
         if(task){
             task.done = true;
             saveTasks(tasks);
-            console.log(`✅ Marked "${task.text}" as done.`);
+            console.log(chalk.green(`✅ Marked "${task.text}" as done.`));
         } else {
-            console.log(`❌ Task #${id} not found.`);
+            console.log(chalk.red(`❌ Task #${id} not found.`));
         }
     }
