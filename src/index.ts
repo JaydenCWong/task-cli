@@ -2,6 +2,8 @@
 
 import {addTask, listTasks, markTaskDone, clearTasks} from "./taskManager.js";
 import {Command} from "commander";
+import { interactiveCLI } from "./inquiry.js";
+import { confirm } from "./utils.js";
 
 
 const program = new Command();
@@ -37,6 +39,13 @@ program
     .description("Clear tasks, by default clears completed tasks only")
     .option("-a, --all", "Clear all tasks")
     .action(async (options) => {
-        await clearTasks(options.all);
+        await clearTasks(options.all, confirm);
+    });
+
+program
+    .command("interactive")
+    .description("Start interactive CLI")
+    .action(async () => {
+        await interactiveCLI();
     });
 program.parse(process.argv);
