@@ -16,6 +16,7 @@ program
 program
     .command("add <task>")
     .description("Add a new task")
+    .alias("a")
     .option("-p, --priority <level>", "Set task priority", "normal")
     .action((task: string, options: {priority: string}) => {
         addTask(task, options);
@@ -24,6 +25,7 @@ program
 program
     .command("list")
     .description("List tasks")
+    .alias("ls")
     .option("-a, --all", "Show all tasks")
     .action((options) =>{
         listTasks(options.all);
@@ -31,12 +33,15 @@ program
 program
     .command("done <id>")
     .description("Mark a task as done")
+    .alias("d")
     .action((id)=> {
         markTaskDone(Number(id));});
 
 program
     .command("clear")
     .description("Clear tasks, by default clears completed tasks only")
+    .alias("c")
+    .alias("rm")
     .option("-a, --all", "Clear all tasks")
     .action(async (options) => {
         await clearTasks(options.all, confirm);
